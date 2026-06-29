@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Objection Trainer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0e1a;--surface:#111622;--surface2:#181f30;
+  --border:rgba(255,255,255,.08);--border2:rgba(255,255,255,.13);
+  --text:#e8eaf0;--text-dim:#8891a8;--text-muted:#5a6275;
+  --gold:#d4a843;--gold-dim:#8a6c28;
+  --ok:#4ab870;--bad:#e05a3a;--accent:#4d8df6;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;
+  background-image:linear-gradient(rgba(92,140,232,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(92,140,232,.05) 1px,transparent 1px);
+  background-size:140px 140px}
+.wrap{max-width:760px;margin:0 auto;padding:18px 18px 60px;display:flex;flex-direction:column;gap:16px}
+
+/* Header */
+.topbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding-top:6px}
+.brand{font-family:'EB Garamond',serif;font-size:24px;color:var(--gold);white-space:nowrap}
+.brand .em{font-style:normal}
+.spacer{flex:1}
+.vtag{font-size:10.5px;color:var(--text-muted);letter-spacing:.04em;cursor:pointer;user-select:none;white-space:nowrap;transition:color .15s;padding:3px 9px;border:1px solid var(--border);border-radius:20px}
+.vtag:hover{color:var(--gold);border-color:var(--gold-dim)}
+.backbtn{display:none;align-items:center;gap:5px;font-size:11px;color:var(--text-dim);text-decoration:none;border:1px solid var(--border2);border-radius:6px;padding:4px 10px;white-space:nowrap;transition:all .15s}
+.backbtn:hover{color:var(--text);border-color:var(--gold-dim)}
+
+.sub{font-size:13px;color:var(--text-dim);line-height:1.6;font-style:italic;margin-top:-6px}
+
+/* Controls row */
+.controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.scorebar{display:flex;gap:8px}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--text-dim);background:var(--surface);border:1px solid var(--border2);border-radius:20px;padding:5px 11px;white-space:nowrap}
+.chip b{color:var(--text);font-weight:700}
+.chip.streak b{color:var(--gold)}
+.seg{display:inline-flex;background:var(--surface);border:1px solid var(--border2);border-radius:9px;overflow:hidden}
+.seg button{background:none;border:none;color:var(--text-dim);font-size:12px;font-weight:600;padding:6px 12px;cursor:pointer;font-family:'Inter',sans-serif;transition:all .14s}
+.seg button.on{background:rgba(212,168,67,.16);color:var(--gold)}
+.usecase{background:var(--surface);border:1px solid var(--border2);color:var(--text-dim);font-size:12px;font-weight:600;padding:6px 12px;border-radius:9px;cursor:pointer;font-family:'Inter',sans-serif;transition:all .14s;white-space:nowrap}
+.usecase.on{background:rgba(77,141,246,.16);border-color:var(--accent);color:#9cc2fb}
+
+/* Optional upload */
+#uparea{display:none;background:var(--surface);border:1px solid var(--border2);border-radius:12px;padding:14px}
+#uparea.show{display:block}
+.drop{position:relative;border:2px dashed rgba(77,141,246,.3);border-radius:10px;min-height:64px;display:flex;align-items:center;justify-content:center;text-align:center;padding:14px;cursor:pointer;transition:all .2s}
+.drop:hover,.drop.over{border-color:var(--gold-dim);background:rgba(212,168,67,.04)}
+.drop input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.drop .dt{font-size:12.5px;color:var(--text-muted);pointer-events:none}
+#upstatus{font-size:12px;margin-top:8px;min-height:16px;line-height:1.5}
+
+/* Scenario card */
+.card{background:linear-gradient(180deg,#0e1626,#0a1120);border:1px solid var(--border2);border-radius:16px;padding:22px;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+.ctx{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--gold);margin-bottom:14px}
+.exchange{display:flex;flex-direction:column;gap:12px}
+.line{display:flex;gap:10px;font-size:15px;line-height:1.6}
+.line .who{flex-shrink:0;font-weight:700;font-size:11px;letter-spacing:.06em;width:64px;padding-top:3px;text-transform:uppercase}
+.line.q .who{color:var(--accent)}
+.line.a .who{color:var(--text-dim)}
+.line .said{font-family:'EB Garamond',serif;font-size:16px;color:var(--text)}
+.loading{display:flex;align-items:center;gap:10px;color:var(--text-dim);font-size:14px;font-style:italic;padding:10px 0}
+.dots span{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--gold);margin:0 2px;animation:b 1.2s infinite}
+.dots span:nth-child(2){animation-delay:.2s}.dots span:nth-child(3){animation-delay:.4s}
+@keyframes b{0%,60%,100%{opacity:.25;transform:translateY(0)}30%{opacity:1;transform:translateY(-4px)}}
+
+/* Question prompt */
+.prompt{font-size:13px;color:var(--text-dim);margin:18px 0 10px;font-weight:600}
+
+/* Objection buttons */
+.objgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:9px}
+.obj{background:var(--surface2);border:1px solid var(--border2);border-radius:10px;padding:11px 12px;cursor:pointer;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;color:var(--text);text-align:left;transition:all .13s}
+.obj:hover:not(:disabled){border-color:var(--gold);background:rgba(212,168,67,.07)}
+.obj:disabled{cursor:default}
+.obj.correct{border-color:var(--ok);background:rgba(74,184,112,.16);color:#bff0d0}
+.obj.wrong{border-color:var(--bad);background:rgba(224,90,58,.16);color:#f7c2b5}
+.obj.dim{opacity:.4}
+.obj.none{grid-column:1/-1;text-align:center;border-style:dashed;color:var(--text-dim)}
+.obj.none:hover:not(:disabled){color:var(--text)}
+
+/* Result */
+#result{display:none;margin-top:16px;border-radius:12px;padding:16px;border:1px solid var(--border2)}
+#result.show{display:block}
+#result.right{border-color:rgba(74,184,112,.4);background:rgba(74,184,112,.07)}
+#result.wrong{border-color:rgba(224,90,58,.4);background:rgba(224,90,58,.07)}
+.verdict{font-size:16px;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+#result.right .verdict{color:var(--ok)}
+#result.wrong .verdict{color:var(--bad)}
+.rlabel{font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text-muted);margin:12px 0 4px}
+.rtext{font-size:14px;line-height:1.65;color:var(--text-dim)}
+.rtext b{color:var(--text)}
+.phrasing{font-family:'EB Garamond',serif;font-style:italic;font-size:15px;color:var(--gold);background:rgba(212,168,67,.07);border-left:3px solid var(--gold);border-radius:8px;padding:9px 12px;margin-top:4px}
+
+.next{margin-top:16px;width:100%;background:var(--gold);color:#1a1200;border:none;font-weight:700;font-size:14px;padding:13px;border-radius:11px;cursor:pointer;font-family:'Inter',sans-serif;transition:opacity .15s}
+.next:hover{opacity:.9}
+.err{color:var(--bad);font-size:13px;line-height:1.6}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="topbar">
+    <a id="backbtn" class="backbtn" href="https://ygblueprint.me" target="_top">← Back to site</a>
+    <span class="brand">⚖️ <span class="em">Objection</span> Trainer</span>
+    <span class="spacer"></span>
+    <span class="vtag" onclick="showChangelog()" title="What's new">v1.0</span>
+  </div>
+  <div class="sub">Read the exchange, then call the objection — or say it's proper. Sharpen your instincts for trial.</div>
+
+  <div class="controls">
+    <div class="scorebar">
+      <span class="chip">✓ <b id="sc-correct">0</b>/<b id="sc-total">0</b></span>
+      <span class="chip streak">🔥 <b id="sc-streak">0</b></span>
+    </div>
+    <span class="spacer"></span>
+    <div class="seg" id="diff">
+      <button data-d="easy">Easy</button>
+      <button data-d="medium" class="on">Medium</button>
+      <button data-d="hard">Hard</button>
+    </div>
+    <button class="usecase" id="usecase-btn" onclick="toggleUseCase()">📄 Use my case</button>
+  </div>
+
+  <div id="uparea">
+    <div class="drop" ondragover="dOver(event)" ondragleave="dLeave(event)" ondrop="dDrop(event)">
+      <input type="file" accept=".pdf,.txt,.md" multiple onchange="handleFiles(this.files);this.value=''">
+      <div class="dt">Drop your case packet / affidavits here · <u>browse</u><br>Scenarios will use your real witnesses & facts</div>
+    </div>
+    <div id="upstatus"></div>
+  </div>
+
+  <div class="card">
+    <div id="scenario"></div>
+    <div id="prompt-row" style="display:none">
+      <div class="prompt">Is this objectionable? Make the call:</div>
+      <div class="objgrid" id="objgrid"></div>
+    </div>
+    <div id="result"></div>
+    <button class="next" id="next-btn" onclick="nextScenario()">Start →</button>
+  </div>
+
+</div>
+
+<script>
+// ══════ Objection types (Y&G) ══════
+const OBJS=[
+  {k:'hearsay',        label:'Hearsay'},
+  {k:'leading',        label:'Leading'},
+  {k:'speculation',    label:'Speculation'},
+  {k:'foundation',     label:'Lack of Foundation'},
+  {k:'opinion',        label:'Improper Opinion'},
+  {k:'relevance',      label:'Relevance'},
+  {k:'argumentative',  label:'Argumentative'},
+  {k:'asked_answered', label:'Asked & Answered'},
+  {k:'narrative',      label:'Narrative'},
+  {k:'compound',       label:'Compound Question'},
+];
+const OBJMAP=Object.fromEntries(OBJS.map(o=>[o.k,o.label]));
+OBJMAP.none='No Objection (proper)';
+
+// ══════ State ══════
+let difficulty='medium';
+let useCase=false;
+let caseFiles=[];           // optional {name,text,words}
+let caseText='';
+let current=null;           // current scenario object
+let answered=false;
+let busy=false;
+let stats={correct:0,total:0,streak:0,best:0};
+
+// ══════ Stats ══════
+function loadStats(){
+  try{const s=JSON.parse(localStorage.getItem('obj_stats')||'null');if(s)stats=Object.assign(stats,s);}catch(_){}
+  renderStats();
+}
+function saveStats(){try{localStorage.setItem('obj_stats',JSON.stringify(stats));}catch(_){}}
+function renderStats(){
+  document.getElementById('sc-correct').textContent=stats.correct;
+  document.getElementById('sc-total').textContent=stats.total;
+  document.getElementById('sc-streak').textContent=stats.streak;
+}
+
+// ══════ Difficulty ══════
+document.getElementById('diff').addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b)return;
+  difficulty=b.dataset.d;
+  document.querySelectorAll('#diff button').forEach(x=>x.classList.toggle('on',x===b));
+});
+
+// ══════ Optional case upload ══════
+function toggleUseCase(){
+  useCase=!useCase;
+  document.getElementById('usecase-btn').classList.toggle('on',useCase);
+  document.getElementById('uparea').classList.toggle('show',useCase);
+}
+function dOver(e){e.preventDefault();e.currentTarget.classList.add('over');}
+function dLeave(e){e.currentTarget.classList.remove('over');}
+function dDrop(e){e.preventDefault();e.currentTarget.classList.remove('over');handleFiles(e.dataTransfer.files);}
+async function handleFiles(list){
+  const files=[...list].filter(Boolean);if(!files.length)return;
+  const st=document.getElementById('upstatus');
+  for(const f of files){
+    const ext=(f.name.split('.').pop()||'').toLowerCase();
+    st.innerHTML='Reading <em>'+esc(f.name)+'</em>…';
+    try{
+      let t=ext==='pdf'?await readPDF(f):await f.text();
+      t=t.replace(/[ \t]+/g,' ').replace(/\n{3,}/g,'\n\n').trim();
+      const words=t.split(/\s+/).filter(Boolean).length;
+      const at=caseFiles.findIndex(x=>x.name===f.name);
+      if(at>=0)caseFiles[at]={name:f.name,text:t,words};else caseFiles.push({name:f.name,text:t,words});
+    }catch(err){st.innerHTML='<span style="color:var(--bad)">⚠ Could not read '+esc(f.name)+'.</span>';return;}
+  }
+  caseText=caseFiles.map(f=>f.text).join('\n\n').trim();
+  const total=caseFiles.reduce((a,f)=>a+f.words,0);
+  st.innerHTML='<span style="color:var(--ok)">✓ '+caseFiles.length+' file'+(caseFiles.length>1?'s':'')+' · '+total.toLocaleString()+' words — scenarios will use your case</span>';
+}
+async function readPDF(file){
+  if(!window.pdfjsLib){
+    await new Promise((res,rej)=>{
+      const s=document.createElement('script');
+      s.src='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+      s.onload=()=>{window.pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';res();};
+      s.onerror=()=>rej(new Error('PDF.js failed'));document.head.appendChild(s);
+    });
+  }
+  const ab=await file.arrayBuffer();
+  const pdf=await window.pdfjsLib.getDocument({data:ab}).promise;
+  const pages=[];
+  for(let i=1;i<=pdf.numPages;i++){const pg=await pdf.getPage(i);const tc=await pg.getTextContent();pages.push(tc.items.map(it=>it.str).join(' '));}
+  return pages.join('\n\n');
+}
+
+function esc(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+// ══════ AI call ══════
+async function streamComplete(system, user){
+  const resp=await fetch('/api/chat',{
+    method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({system,messages:[{role:'user',content:user}]})
+  });
+  if(!resp.ok){
+    const e=await resp.text();let m='Error '+resp.status;
+    try{const j=JSON.parse(e);m=j.error||m;}catch(_){}
+    if(resp.status===429||String(m).includes('rate'))throw new Error('RATE_LIMIT');
+    throw new Error(String(m).slice(0,140));
+  }
+  const reader=resp.body.getReader();const dec=new TextDecoder();let full='';
+  while(true){
+    const{done,value}=await reader.read();if(done)break;
+    for(const ln of dec.decode(value).split('\n')){
+      if(!ln.startsWith('data: ')||ln.includes('[DONE]'))continue;
+      try{const d=JSON.parse(ln.slice(6));const c=d.choices?.[0]?.delta?.content;if(c)full+=c;}catch(_){}
+    }
+  }
+  return full;
+}
+
+const KEYS=OBJS.map(o=>o.k).join(', ');
+function buildSystem(){
+  const caseBlock=(useCase&&caseText)
+    ? `\n\nUSE THIS REAL CASE — base the witness names, facts, and exhibits on it:\n${caseText.slice(0,6000)}\n`
+    : '';
+  return `You are an objection trainer for a Y&G (Youth & Government) high-school mock trial student. Create ONE short, realistic examination exchange and decide whether it is objectionable.
+
+Vary it: sometimes the question/answer clearly warrants a specific objection; sometimes it is perfectly proper so "none" is correct. Mix direct and cross examination. Difficulty: ${difficulty} (easy = obvious; hard = subtle, tempting traps).
+
+The ONLY valid objection keys are: ${KEYS}, or "none" if the exchange is proper.
+
+Y&G rules to apply: hearsay = out-of-court statement offered for its truth. leading = suggests its answer (improper on DIRECT, fine on CROSS). speculation = asks witness to guess. foundation = no personal knowledge / facts not established. opinion = lay witness giving improper opinion/expert conclusion. relevance = not tied to a fact of consequence. argumentative = badgering / picking a fight, not seeking info. asked_answered = already answered. narrative = invites a long open-ended story. compound = two questions in one.
+
+Reply with ONLY valid JSON, no markdown, no extra text:
+{
+ "context": "one short line: who is testifying + DIRECT or CROSS (e.g. 'Cross-examination of Officer Reyes')",
+ "attorney": "the attorney's exact question",
+ "witness": "the witness's exact answer, OR \\"\\" (empty) if the objection is to the question before any answer",
+ "answer": "one key from the list above, or none",
+ "explanation": "2-3 sentences: why that is the right call, citing the rule plainly",
+ "phrasing": "exactly how to voice it aloud, e.g. 'Objection, hearsay.' — or for none: 'No objection — the question is proper.'"
+}${caseBlock}`;
+}
+
+function parseScenario(txt){
+  const m=txt.match(/\{[\s\S]*\}/);
+  if(!m)throw new Error('bad');
+  const o=JSON.parse(m[0]);
+  if(!o.attorney||!o.answer)throw new Error('bad');
+  if(!OBJMAP[o.answer])o.answer='none';
+  return o;
+}
+
+// ══════ Flow ══════
+async function nextScenario(){
+  if(busy)return;
+  busy=true;answered=false;current=null;
+  document.getElementById('result').className='';
+  document.getElementById('result').innerHTML='';
+  document.getElementById('prompt-row').style.display='none';
+  document.getElementById('next-btn').style.display='none';
+  document.getElementById('scenario').innerHTML='<div class="loading">Writing a scenario<span class="dots"><span></span><span></span><span></span></span></div>';
+  try{
+    const raw=await streamComplete(buildSystem(),'Generate one objection scenario as JSON now.');
+    current=parseScenario(raw);
+    renderScenario();
+  }catch(e){
+    const msg=e.message==='RATE_LIMIT'
+      ? '⏱ Rate limit reached — wait about a minute, then tap Try again.'
+      : '⚠ '+e.message;
+    document.getElementById('scenario').innerHTML='<div class="err">'+esc(msg)+'</div>';
+    document.getElementById('next-btn').style.display='';
+    document.getElementById('next-btn').textContent='Try again →';
+  }
+  busy=false;
+}
+
+function renderScenario(){
+  const c=current;
+  let html='<div class="ctx">'+esc(c.context||'Witness examination')+'</div><div class="exchange">';
+  html+='<div class="line q"><span class="who">Attorney</span><span class="said">'+esc(c.attorney)+'</span></div>';
+  if(c.witness&&c.witness.trim())
+    html+='<div class="line a"><span class="who">Witness</span><span class="said">'+esc(c.witness)+'</span></div>';
+  html+='</div>';
+  document.getElementById('scenario').innerHTML=html;
+  // buttons
+  const grid=document.getElementById('objgrid');
+  grid.innerHTML=OBJS.map(o=>'<button class="obj" data-k="'+o.k+'" onclick="choose(\''+o.k+'\')">'+o.label+'</button>').join('')
+    +'<button class="obj none" data-k="none" onclick="choose(\'none\')">✓ No Objection — it\'s proper</button>';
+  document.getElementById('prompt-row').style.display='';
+}
+
+function choose(key){
+  if(answered||!current)return;
+  answered=true;
+  const correct=current.answer;
+  const right=key===correct;
+  // mark buttons
+  document.querySelectorAll('.obj').forEach(b=>{
+    b.disabled=true;
+    const k=b.dataset.k;
+    if(k===correct)b.classList.add('correct');
+    else if(k===key)b.classList.add('wrong');
+    else b.classList.add('dim');
+  });
+  // stats
+  stats.total++;
+  if(right){stats.correct++;stats.streak++;stats.best=Math.max(stats.best,stats.streak);}
+  else stats.streak=0;
+  saveStats();renderStats();
+  // result panel
+  const r=document.getElementById('result');
+  r.className='show '+(right?'right':'wrong');
+  r.innerHTML=
+    '<div class="verdict">'+(right?'✓ Correct!':'✗ Not quite')+'</div>'+
+    '<div class="rtext">The right call: <b>'+esc(OBJMAP[correct])+'</b>'+(right?'':' — you picked <b>'+esc(OBJMAP[key])+'</b>')+'.</div>'+
+    '<div class="rlabel">Why</div><div class="rtext">'+esc(current.explanation||'')+'</div>'+
+    '<div class="rlabel">How to say it</div><div class="phrasing">'+esc(current.phrasing||'')+'</div>';
+  const nb=document.getElementById('next-btn');
+  nb.style.display='';nb.textContent='Next scenario →';
+}
+
+// ══════ Changelog ══════
+const CHANGELOG=[
+  ['v1.0','Spot-the-objection trainer: realistic exchanges, instant feedback, the rule, how to phrase it. Difficulty levels, score + streak, optional "use my case".'],
+];
+function showChangelog(){alert('Objection Trainer — Update History\n\n'+CHANGELOG.map(([v,d])=>v+'  —  '+d).join('\n\n'));}
+
+// ══════ Back to site (only when embedded) ══════
+const SITE_URL='https://ygblueprint.me';
+if(window.self!==window.top){
+  const b=document.getElementById('backbtn');b.href=SITE_URL;b.style.display='inline-flex';
+}
+
+loadStats();
+</script>
+</body>
+</html>
