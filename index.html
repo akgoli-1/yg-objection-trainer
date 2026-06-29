@@ -94,7 +94,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
     <a id="backbtn" class="backbtn" href="https://ygblueprint.me" target="_top">← Back to site</a>
     <span class="brand">⚖️ <span class="em">Objection</span> Trainer</span>
     <span class="spacer"></span>
-    <span class="vtag" onclick="showChangelog()" title="What's new">v1.0</span>
+    <span class="vtag" onclick="showChangelog()" title="What's new">v1.1</span>
   </div>
   <div class="sub">Read the exchange, then call the objection — or say it's proper. Sharpen your instincts for trial.</div>
 
@@ -212,12 +212,22 @@ Reply with ONLY valid JSON, no markdown, no extra text:
 }`;
 }
 
+// Forgiving JSON parse — handles code fences, stray text, trailing commas, smart quotes.
 function parseScenario(txt){
-  const m=txt.match(/\{[\s\S]*\}/);
-  if(!m)throw new Error('bad');
-  const o=JSON.parse(m[0]);
-  if(!o.attorney||!o.answer)throw new Error('bad');
-  if(!OBJMAP[o.answer])o.answer='none';
+  let s=(txt||'').trim();
+  s=s.replace(/```json/gi,'').replace(/```/g,'').trim();
+  const a=s.indexOf('{'), b=s.lastIndexOf('}');
+  if(a<0||b<=a) throw new Error('no-json');
+  let body=s.slice(a,b+1);
+  let o;
+  try{ o=JSON.parse(body); }
+  catch(_){
+    body=body.replace(/[“”]/g,'"').replace(/[‘’]/g,"'").replace(/,\s*([}\]])/g,'$1');
+    o=JSON.parse(body);   // throws if still bad → caller retries
+  }
+  if(!o.attorney||!o.answer) throw new Error('missing-fields');
+  if(!OBJMAP[o.answer]) o.answer='none';
+  o.witness=o.witness||'';
   return o;
 }
 
@@ -230,18 +240,25 @@ async function nextScenario(){
   document.getElementById('prompt-row').style.display='none';
   document.getElementById('next-btn').style.display='none';
   document.getElementById('scenario').innerHTML='<div class="loading">Writing a scenario<span class="dots"><span></span><span></span><span></span></span></div>';
-  try{
-    const raw=await streamComplete(buildSystem(),'Generate one objection scenario as JSON now.');
-    current=parseScenario(raw);
-    renderScenario();
-  }catch(e){
-    const msg=e.message==='RATE_LIMIT'
-      ? '⏱ Rate limit reached — wait about a minute, then tap Try again.'
-      : '⚠ '+e.message;
-    document.getElementById('scenario').innerHTML='<div class="err">'+esc(msg)+'</div>';
-    document.getElementById('next-btn').style.display='';
-    document.getElementById('next-btn').textContent='Try again →';
+  let lastErr=null;
+  for(let attempt=0; attempt<3; attempt++){            // auto-retry malformed responses
+    try{
+      const raw=await streamComplete(buildSystem(),'Generate one objection scenario as strict JSON now. Output ONLY the JSON object.');
+      current=parseScenario(raw);
+      renderScenario();
+      busy=false;
+      return;
+    }catch(e){
+      lastErr=e;
+      if(e.message==='RATE_LIMIT') break;             // don't hammer a rate limit
+    }
   }
+  const msg=(lastErr&&lastErr.message==='RATE_LIMIT')
+    ? '⏱ Rate limit reached — wait about a minute, then tap Try again.'
+    : '⚠ Couldn\'t generate a clean scenario — tap Try again.';
+  document.getElementById('scenario').innerHTML='<div class="err">'+esc(msg)+'</div>';
+  const nb=document.getElementById('next-btn');
+  nb.style.display='';nb.textContent='Try again →';
   busy=false;
 }
 
@@ -292,6 +309,7 @@ function choose(key){
 
 // ══════ Changelog ══════
 const CHANGELOG=[
+  ['v1.1','Fixed the occasional "bad" error — backend now forces clean JSON and the app auto-retries if a scenario comes back malformed.'],
   ['v1.0','Spot-the-objection drill: realistic AI exchanges, instant feedback with the rule and how to phrase the objection, difficulty levels, score + streak.'],
 ];
 function showChangelog(){alert('Objection Trainer — Update History\n\n'+CHANGELOG.map(([v,d])=>v+'  —  '+d).join('\n\n'));}

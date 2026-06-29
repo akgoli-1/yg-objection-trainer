@@ -46,7 +46,8 @@ export default async function handler(req) {
         messages: groqMessages,
         stream: true,
         max_tokens: 1000,
-        temperature: 0.85,
+        temperature: 0.6,
+        response_format: { type: 'json_object' },
       })
     });
   } catch (e) {
