@@ -5,9 +5,8 @@ realistic attorney–witness exchange; you decide whether it's objectionable and
 objection applies (or that it's proper). Instant feedback with the rule and how to
 phrase the objection out loud.
 
-- **Standalone** practice (AI-generated scenarios) or **use your own case** (upload a
-  packet and scenarios use your real witnesses & facts).
-- Difficulty levels, running score, and streak (saved in your browser).
+- Pure drill-and-kill practice with AI-generated scenarios — no upload needed.
+- Difficulty levels (Easy / Medium / Hard), running score, and streak (saved in your browser).
 
 ## Stack
 - Single static `index.html` (no build step).
