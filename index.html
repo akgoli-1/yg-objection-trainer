@@ -29,22 +29,40 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .vtag:hover{color:var(--gold);border-color:var(--gold-dim)}
 .backbtn{display:none;align-items:center;gap:5px;font-size:11px;color:var(--text-dim);text-decoration:none;border:1px solid var(--border2);border-radius:6px;padding:4px 10px;white-space:nowrap;transition:all .15s}
 .backbtn:hover{color:var(--text);border-color:var(--gold-dim)}
-
 .sub{font-size:13px;color:var(--text-dim);line-height:1.6;font-style:italic;margin-top:-6px}
 
-/* Controls row */
+/* Controls */
 .controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .scorebar{display:flex;gap:8px}
 .chip{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--text-dim);background:var(--surface);border:1px solid var(--border2);border-radius:20px;padding:5px 11px;white-space:nowrap}
 .chip b{color:var(--text);font-weight:700}
 .chip.streak b{color:var(--gold)}
 .seg{display:inline-flex;background:var(--surface);border:1px solid var(--border2);border-radius:9px;overflow:hidden}
-.seg button{background:none;border:none;color:var(--text-dim);font-size:12px;font-weight:600;padding:6px 12px;cursor:pointer;font-family:'Inter',sans-serif;transition:all .14s}
+.seg button{background:none;border:none;color:var(--text-dim);font-size:12px;font-weight:600;padding:6px 12px;cursor:pointer;font-family:'Inter',sans-serif;transition:all .14s;white-space:nowrap}
 .seg button.on{background:rgba(212,168,67,.16);color:var(--gold)}
+.seg.src button.on{background:rgba(77,141,246,.18);color:#9cc2fb}
+
+/* Case upload (only in My Case mode) */
+#uparea{display:none;background:var(--surface);border:1px solid var(--border2);border-radius:12px;padding:14px}
+#uparea.show{display:block}
+.upmsg{font-size:12px;color:var(--text-dim);font-style:italic;margin-bottom:12px}
+.upbox+.upbox{margin-top:12px}
+.upbox-label{font-size:11px;font-weight:600;color:var(--text-dim);margin-bottom:5px;display:flex;align-items:center;gap:6px}
+.drop{position:relative;border:2px dashed rgba(77,141,246,.3);border-radius:10px;min-height:54px;display:flex;align-items:center;justify-content:center;text-align:center;padding:11px;cursor:pointer;transition:all .2s}
+.drop:hover,.drop.over{border-color:var(--gold-dim);background:rgba(212,168,67,.04)}
+.drop input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.drop .dt{font-size:12.5px;color:var(--text-muted);pointer-events:none}
+.file-status{font-size:12px;margin-top:6px;min-height:14px;line-height:1.5}
+
 /* Scenario card */
 .card{background:linear-gradient(180deg,#0e1626,#0a1120);border:1px solid var(--border2);border-radius:16px;padding:22px;box-shadow:0 20px 60px rgba(0,0,0,.5)}
-.ctx{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--gold);margin-bottom:14px}
-.exchange{display:flex;flex-direction:column;gap:12px}
+.ctxrow{display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.ctx{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--gold)}
+.srcbadge{font-size:9.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:2px 8px;border-radius:20px}
+.srcbadge.bank{color:var(--text-dim);background:rgba(255,255,255,.05);border:1px solid var(--border2)}
+.srcbadge.case{color:#9cc2fb;background:rgba(77,141,246,.14);border:1px solid rgba(77,141,246,.3)}
+.srcbadge.run{color:var(--gold);background:rgba(212,168,67,.12);border:1px solid var(--gold-dim)}
+.exchange{display:flex;flex-direction:column;gap:11px}
 .line{display:flex;gap:10px;font-size:15px;line-height:1.6}
 .line .who{flex-shrink:0;font-weight:700;font-size:11px;letter-spacing:.06em;width:64px;padding-top:3px;text-transform:uppercase}
 .line.q .who{color:var(--accent)}
@@ -54,11 +72,9 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .dots span{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--gold);margin:0 2px;animation:b 1.2s infinite}
 .dots span:nth-child(2){animation-delay:.2s}.dots span:nth-child(3){animation-delay:.4s}
 @keyframes b{0%,60%,100%{opacity:.25;transform:translateY(0)}30%{opacity:1;transform:translateY(-4px)}}
+.hintmsg{font-size:13.5px;color:var(--text-dim);line-height:1.6;padding:6px 0}
 
-/* Question prompt */
 .prompt{font-size:13px;color:var(--text-dim);margin:18px 0 10px;font-weight:600}
-
-/* Objection buttons */
 .objgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:9px}
 .obj{background:var(--surface2);border:1px solid var(--border2);border-radius:10px;padding:11px 12px;cursor:pointer;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;color:var(--text);text-align:left;transition:all .13s}
 .obj:hover:not(:disabled){border-color:var(--gold);background:rgba(212,168,67,.07)}
@@ -69,7 +85,6 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .obj.none{grid-column:1/-1;text-align:center;border-style:dashed;color:var(--text-dim)}
 .obj.none:hover:not(:disabled){color:var(--text)}
 
-/* Result */
 #result{display:none;margin-top:16px;border-radius:12px;padding:16px;border:1px solid var(--border2)}
 #result.show{display:block}
 #result.right{border-color:rgba(74,184,112,.4);background:rgba(74,184,112,.07)}
@@ -94,7 +109,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
     <a id="backbtn" class="backbtn" href="https://ygblueprint.me" target="_top">← Back to site</a>
     <span class="brand">⚖️ <span class="em">Objection</span> Trainer</span>
     <span class="spacer"></span>
-    <span class="vtag" onclick="showChangelog()" title="What's new">v1.2</span>
+    <span class="vtag" onclick="showChangelog()" title="What's new">v2.0</span>
   </div>
   <div class="sub">Read the exchange, then call the objection — or say it's proper. Sharpen your instincts for trial.</div>
 
@@ -104,6 +119,10 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
       <span class="chip streak">🔥 <b id="sc-streak">0</b></span>
     </div>
     <span class="spacer"></span>
+    <div class="seg src" id="source">
+      <button data-s="bank" class="on">📚 Practice Bank</button>
+      <button data-s="case">📄 My Case</button>
+    </div>
     <div class="seg" id="diff">
       <button data-d="easy">Easy</button>
       <button data-d="medium" class="on">Medium</button>
@@ -111,8 +130,28 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
     </div>
   </div>
 
+  <div id="uparea">
+    <div class="upmsg">Drop your case files — the AI builds objection scenarios from your real witnesses & exhibits, 3 at a time.</div>
+    <div class="upbox">
+      <div class="upbox-label">👤 Affidavits</div>
+      <div class="drop" ondragover="dOver(event)" ondragleave="dLeave(event)" ondrop="dDrop(event,'affidavits')">
+        <input type="file" accept=".pdf,.txt,.md" multiple onchange="handleFiles(this.files,'affidavits');this.value=''">
+        <div class="dt">Drop the witness affidavits · <u>browse</u></div>
+      </div>
+      <div class="file-status" data-status="affidavits"></div>
+    </div>
+    <div class="upbox">
+      <div class="upbox-label">🔍 Evidence</div>
+      <div class="drop" ondragover="dOver(event)" ondragleave="dLeave(event)" ondrop="dDrop(event,'evidence')">
+        <input type="file" accept=".pdf,.txt,.md" multiple onchange="handleFiles(this.files,'evidence');this.value=''">
+        <div class="dt">Drop the labeled evidence packets · <u>browse</u></div>
+      </div>
+      <div class="file-status" data-status="evidence"></div>
+    </div>
+  </div>
+
   <div class="card">
-    <div id="scenario"></div>
+    <div id="scenario"><div class="hintmsg">Tap <b>Start</b> to get your first exchange. Practice Bank is free and instant — switch to <b>My Case</b> to drill on your own witnesses.</div></div>
     <div id="prompt-row" style="display:none">
       <div class="prompt">Is this objectionable? Make the call:</div>
       <div class="objgrid" id="objgrid"></div>
@@ -124,6 +163,8 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 </div>
 
 <script>
+function esc(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
 // ══════ Objection types (Y&G) ══════
 const OBJS=[
   {k:'hearsay',        label:'Hearsay'},
@@ -141,18 +182,79 @@ const OBJS=[
 const OBJMAP=Object.fromEntries(OBJS.map(o=>[o.k,o.label]));
 OBJMAP.none='No Objection (proper)';
 
+// ══════ FREE PRACTICE BANK — hand-written, uses ZERO AI tokens ══════
+// ex: array of [who,text] where who 'Q'=attorney, 'A'=witness. d: e/m/h difficulty.
+const BANK=[
+  // Hearsay
+  {context:'Direct exam of a bystander', ex:[['Q','What did the woman at the bus stop tell you about who ran the red light?']], a:'hearsay', why:'The question asks the witness to repeat someone else\'s out-of-court statement to prove who ran the light — hearsay (Rule 802).', say:'Objection, hearsay.', d:'e'},
+  {context:'Direct exam of Officer Diaz', ex:[['Q','And what did the 911 caller report the suspect was wearing?']], a:'hearsay', why:'The caller\'s out-of-court statement is being offered for its truth, which is hearsay.', say:'Objection, hearsay.', d:'m'},
+  {context:'Direct exam of a store clerk', ex:[['Q','Did your manager tell you the alarm had gone off earlier that night?']], a:'hearsay', why:'Repeating the manager\'s out-of-court statement for its truth is hearsay.', say:'Objection, hearsay.', d:'m'},
+  // Leading (improper on direct) + proper on cross (none)
+  {context:'Direct exam of the plaintiff', ex:[['Q','You saw the defendant grab the railing before he fell, didn\'t you?']], a:'leading', why:'On DIRECT you can\'t suggest the answer (Rule 611). This tells the witness what to say.', say:'Objection, leading.', d:'e'},
+  {context:'Direct exam of a witness', ex:[['Q','The light was red when the car entered the intersection, correct?']], a:'leading', why:'A direct-exam question that suggests its own answer is leading.', say:'Objection, leading.', d:'e'},
+  {context:'CROSS-examination of the defendant', ex:[['Q','You never actually measured the distance, correct?']], a:'none', why:'Leading questions are proper on cross-examination, so this is fine.', say:'No objection — leading is allowed on cross.', d:'m'},
+  {context:'CROSS-examination of a witness', ex:[['Q','You were inside the whole time, weren\'t you?']], a:'none', why:'Leading is permitted on cross; this seeks a fact properly.', say:'No objection.', d:'h'},
+  // Speculation
+  {context:'Direct exam of a coworker', ex:[['Q','What was the driver thinking when he sped up?']], a:'speculation', why:'The witness can\'t know another person\'s thoughts; it calls for a guess.', say:'Objection, calls for speculation.', d:'e'},
+  {context:'Cross of a neighbor', ex:[['Q','If the streetlight had been working, would the accident still have happened?']], a:'speculation', why:'This asks the witness to guess about a hypothetical they can\'t know.', say:'Objection, speculation.', d:'m'},
+  // Foundation
+  {context:'Direct exam of a passerby', ex:[['Q','How fast was the blue car going when it hit the pole?']], a:'foundation', why:'No foundation has been laid that the witness actually saw the collision or can judge speed.', say:'Objection, lack of foundation.', d:'m'},
+  {context:'Direct exam of a witness', ex:[['Q','What does the defendant\'s bank statement from March show?']], a:'foundation', why:'The document and the witness\'s knowledge of it haven\'t been established first.', say:'Objection, lack of foundation.', d:'h'},
+  // Lay opinion (701) — improper, and proper (none)
+  {context:'Direct exam of a bystander (not a doctor)', ex:[['Q','In your opinion, did the victim suffer a concussion?']], a:'lay_opinion', why:'Diagnosing a concussion needs medical expertise; a lay witness may only give common-sense opinions from perception (Rule 701).', say:'Objection, improper lay opinion.', d:'m'},
+  {context:'Direct exam of a bystander', ex:[['Q','Did the man appear drunk to you?'],['A','Yes, he was slurring and stumbling.']], a:'none', why:'A lay witness MAY opine that someone appeared intoxicated based on ordinary perception (Rule 701).', say:'No objection — proper lay opinion.', d:'h'},
+  {context:'Direct exam of a coworker (not an engineer)', ex:[['Q','Was the scaffolding structurally unsafe?']], a:'lay_opinion', why:'Structural safety requires expertise; a lay witness can\'t give that opinion (Rule 701).', say:'Objection, improper lay opinion.', d:'m'},
+  // Expert opinion (702)
+  {context:'Direct exam of a treating nurse (not an accident expert)', ex:[['Q','Based on the skid marks, what speed was the vehicle traveling?']], a:'expert_opinion', why:'Accident reconstruction requires expert qualification that hasn\'t been established (Rule 702).', say:'Objection — improper expert opinion, no qualification.', d:'h'},
+  {context:'Direct exam of Dr. Park, a qualified physician', ex:[['Q','Doctor, was the defendant negligent in how he treated the patient?']], a:'expert_opinion', why:'“Negligent” is a legal conclusion for the jury, not a proper subject of expert opinion (Rule 702).', say:'Objection — calls for a legal conclusion.', d:'h'},
+  // Relevance
+  {context:'Cross of the plaintiff', ex:[['Q','Isn\'t it true you got a parking ticket three years ago?']], a:'relevance', why:'An old parking ticket has no bearing on any fact of consequence here (Rule 402).', say:'Objection, relevance.', d:'e'},
+  {context:'Cross of a witness', ex:[['Q','What kind of car does your brother drive?']], a:'relevance', why:'The brother\'s car isn\'t tied to any issue in the case.', say:'Objection, relevance.', d:'m'},
+  // Argumentative
+  {context:'Cross of the defendant', ex:[['Q','You expect this jury to believe you didn\'t see a stop sign that big?']], a:'argumentative', why:'It badgers the witness and makes an argument instead of seeking facts.', say:'Objection, argumentative.', d:'m'},
+  {context:'Cross of a witness', ex:[['Q','So you\'re just making this up as you go, aren\'t you?']], a:'argumentative', why:'This picks a fight rather than asking for information.', say:'Objection, argumentative.', d:'m'},
+  // Asked and answered
+  {context:'Direct exam', ex:[['Q','What color was the light?'],['A','It was red.'],['Q','So just to be clear, what color was the light again?']], a:'asked_answered', why:'The witness already answered; repeating it is asked and answered.', say:'Objection, asked and answered.', d:'m'},
+  // Narrative
+  {context:'Direct exam', ex:[['Q','Tell us everything that happened that day, from start to finish.']], a:'narrative', why:'An open-ended “tell us everything” invites an unguided narrative.', say:'Objection, calls for a narrative.', d:'e'},
+  {context:'Direct exam', ex:[['Q','Just go ahead and explain the whole story in your own words.']], a:'narrative', why:'This invites a long, unfocused narrative answer.', say:'Objection, narrative.', d:'m'},
+  // Compound
+  {context:'Cross', ex:[['Q','Did you see the car and did you call the police?']], a:'compound', why:'Two questions in one — the witness can\'t answer cleanly.', say:'Objection, compound.', d:'e'},
+  {context:'Cross', ex:[['Q','Were you angry, and is that why you left?']], a:'compound', why:'It packs two distinct questions together.', say:'Objection, compound.', d:'m'},
+  // Proper (none)
+  {context:'Direct exam', ex:[['Q','What did you see when you turned the corner?']], a:'none', why:'A proper, specific question seeking the witness\'s own perception.', say:'No objection.', d:'e'},
+  {context:'Direct exam', ex:[['Q','Where were you standing at 9 p.m.?'],['A','By the corner store.']], a:'none', why:'A clear foundational question — perfectly proper.', say:'No objection.', d:'e'},
+  {context:'Cross', ex:[['Q','You were about 50 feet away, correct?']], a:'none', why:'Proper leading question on cross seeking a fact.', say:'No objection.', d:'m'},
+  // ── Multi-line / running exchanges ──
+  {context:'Direct exam — running exchange', ex:[['Q','Where were you standing?'],['A','By the corner store.'],['Q','And what did your friend shout to you about the driver?']], a:'hearsay', why:'The setup was fine, but the final question asks for the friend\'s out-of-court statement for its truth — hearsay.', say:'Objection, hearsay.', d:'h'},
+  {context:'Direct exam — running exchange', ex:[['Q','You work at the bakery?'],['A','Yes.'],['Q','And you clearly saw the defendant steal the bread, right?']], a:'leading', why:'The last question on direct suggests its answer (Rule 611).', say:'Objection, leading.', d:'m'},
+  {context:'Cross — running exchange', ex:[['Q','You testified you were in the kitchen?'],['A','That\'s right.'],['Q','And you have no idea what happened in the garage, do you?']], a:'none', why:'Leading is fine on cross and this seeks a fact — proper.', say:'No objection.', d:'h'},
+  {context:'Direct exam — running exchange', ex:[['Q','How long have you known the defendant?'],['A','About five years.'],['Q','In your opinion, is he the kind of person who would commit fraud?']], a:'relevance', why:'The defendant\'s general character to commit fraud isn\'t a proper fact of consequence here (and invites improper character/opinion).', say:'Objection, relevance.', d:'h'},
+  {context:'Direct exam — running exchange', ex:[['Q','You\'re a mechanic?'],['A','Yes, 12 years.'],['Q','Looking at this photo, what speed does the engine damage tell you the car was going?']], a:'expert_opinion', why:'Estimating speed from engine damage is an expert accident-reconstruction opinion outside a mechanic\'s established expertise (Rule 702).', say:'Objection, improper expert opinion.', d:'h'},
+  {context:'Direct exam — running exchange', ex:[['Q','Did you arrive at the scene?'],['A','Yes.'],['Q','What did the victim tell you, and what did you do next?']], a:'compound', why:'The final question asks two things at once (and the first part also calls for hearsay) — compound.', say:'Objection, compound.', d:'h'},
+  {context:'Cross — running exchange', ex:[['Q','You said you saw everything clearly?'],['A','Yes.'],['Q','But it was dark, and you weren\'t wearing your glasses, were you?']], a:'none', why:'Proper impeaching cross — leading is allowed and it seeks facts.', say:'No objection.', d:'m'},
+  {context:'Direct exam — running exchange', ex:[['Q','What time did you get home?'],['A','Around ten.'],['Q','And around ten — just to confirm, what time did you say you got home?']], a:'asked_answered', why:'The witness already gave the time; re-asking is asked and answered.', say:'Objection, asked and answered.', d:'m'},
+];
+function fromBank(b){
+  return {
+    context:b.context,
+    exchanges:b.ex.map(([w,t])=>({who:w==='Q'?'attorney':'witness',text:t})),
+    answer:b.a, explanation:b.why, phrasing:b.say,
+    src: b.context.includes('running')?'run':'bank'
+  };
+}
+
 // ══════ State ══════
 let difficulty='medium';
-let current=null;           // current scenario object
-let answered=false;
-let busy=false;
+let source='bank';            // 'bank' (free) | 'case' (AI from uploaded files)
+let current=null, answered=false, busy=false;
 let stats={correct:0,total:0,streak:0,best:0};
+let bankQueue=[];             // shuffled indices into BANK
+let aiQueue=[];               // pre-generated AI scenarios (batches of 3)
+let caseFiles=[], caseText='';
 
 // ══════ Stats ══════
-function loadStats(){
-  try{const s=JSON.parse(localStorage.getItem('obj_stats')||'null');if(s)stats=Object.assign(stats,s);}catch(_){}
-  renderStats();
-}
+function loadStats(){try{const s=JSON.parse(localStorage.getItem('obj_stats')||'null');if(s)stats=Object.assign(stats,s);}catch(_){}renderStats();}
 function saveStats(){try{localStorage.setItem('obj_stats',JSON.stringify(stats));}catch(_){}}
 function renderStats(){
   document.getElementById('sc-correct').textContent=stats.correct;
@@ -160,21 +262,69 @@ function renderStats(){
   document.getElementById('sc-streak').textContent=stats.streak;
 }
 
-// ══════ Difficulty ══════
+// ══════ Difficulty + Source toggles ══════
+function diffLetter(){return {easy:'e',medium:'m',hard:'h'}[difficulty];}
 document.getElementById('diff').addEventListener('click',e=>{
   const b=e.target.closest('button');if(!b)return;
   difficulty=b.dataset.d;
   document.querySelectorAll('#diff button').forEach(x=>x.classList.toggle('on',x===b));
+  bankQueue=[]; aiQueue=[];   // difficulty changed → rebuild pools
+});
+document.getElementById('source').addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b)return;
+  source=b.dataset.s;
+  document.querySelectorAll('#source button').forEach(x=>x.classList.toggle('on',x===b));
+  document.getElementById('uparea').classList.toggle('show',source==='case');
+  const nb=document.getElementById('next-btn');nb.textContent='Start →';nb.style.display='';
 });
 
-function esc(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-
-// ══════ AI call ══════
-async function streamComplete(system, user){
-  const resp=await fetch('/api/chat',{
-    method:'POST',headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({system,messages:[{role:'user',content:user}]})
+// ══════ Case upload (two boxes) ══════
+const UPCATS=[{key:'affidavits',heading:'AFFIDAVIT'},{key:'evidence',heading:'EVIDENCE DOCUMENT'}];
+function dOver(e){e.preventDefault();e.currentTarget.classList.add('over');}
+function dLeave(e){e.currentTarget.classList.remove('over');}
+function dDrop(e,cat){e.preventDefault();e.currentTarget.classList.remove('over');handleFiles(e.dataTransfer.files,cat);}
+async function handleFiles(list,cat){
+  const files=[...list].filter(Boolean);if(!files.length)return;
+  const st=document.querySelector('[data-status="'+cat+'"]');
+  for(const f of files){
+    const ext=(f.name.split('.').pop()||'').toLowerCase();
+    if(st)st.innerHTML='Reading <em>'+esc(f.name)+'</em>…';
+    try{
+      let t=ext==='pdf'?await readPDF(f):await f.text();
+      t=t.replace(/[ \t]+/g,' ').replace(/\n{3,}/g,'\n\n').trim();
+      const words=t.split(/\s+/).filter(Boolean).length;
+      const at=caseFiles.findIndex(x=>x.name===f.name&&x.cat===cat);
+      if(at>=0)caseFiles[at]={name:f.name,text:t,words,cat};else caseFiles.push({name:f.name,text:t,words,cat});
+    }catch(err){if(st)st.innerHTML='<span style="color:var(--bad)">⚠ Could not read '+esc(f.name)+'.</span>';return;}
+  }
+  aiQueue=[];   // new files → regenerate scenarios next time
+  caseText=UPCATS.flatMap(c=>caseFiles.filter(f=>f.cat===c.key).map(f=>'===== '+c.heading+': '+f.name+' =====\n'+f.text)).join('\n\n').trim();
+  UPCATS.forEach(c=>{
+    const el=document.querySelector('[data-status="'+c.key+'"]');if(!el)return;
+    const fs=caseFiles.filter(f=>f.cat===c.key);
+    el.innerHTML=fs.length?'<span style="color:var(--ok)">✓ '+fs.length+' file'+(fs.length>1?'s':'')+' · '+fs.reduce((a,f)=>a+f.words,0).toLocaleString()+' words</span>':'';
   });
+}
+async function readPDF(file){
+  if(!window.pdfjsLib){
+    await new Promise((res,rej)=>{
+      const s=document.createElement('script');
+      s.src='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+      s.onload=()=>{window.pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';res();};
+      s.onerror=()=>rej(new Error('PDF.js failed'));document.head.appendChild(s);
+    });
+  }
+  const ab=await file.arrayBuffer();
+  const pdf=await window.pdfjsLib.getDocument({data:ab}).promise;
+  const pages=[];
+  for(let i=1;i<=pdf.numPages;i++){const pg=await pdf.getPage(i);const tc=await pg.getTextContent();pages.push(tc.items.map(it=>it.str).join(' '));}
+  return pages.join('\n\n');
+}
+
+// ══════ AI (batches of 3, only in My Case mode) ══════
+async function streamComplete(system,user){
+  const resp=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({system,messages:[{role:'user',content:user}]})});
   if(!resp.ok){
     const e=await resp.text();let m='Error '+resp.status;
     try{const j=JSON.parse(e);m=j.error||m;}catch(_){}
@@ -182,8 +332,7 @@ async function streamComplete(system, user){
     throw new Error(String(m).slice(0,140));
   }
   const reader=resp.body.getReader();const dec=new TextDecoder();let full='';
-  while(true){
-    const{done,value}=await reader.read();if(done)break;
+  while(true){const{done,value}=await reader.read();if(done)break;
     for(const ln of dec.decode(value).split('\n')){
       if(!ln.startsWith('data: ')||ln.includes('[DONE]'))continue;
       try{const d=JSON.parse(ln.slice(6));const c=d.choices?.[0]?.delta?.content;if(c)full+=c;}catch(_){}
@@ -191,136 +340,152 @@ async function streamComplete(system, user){
   }
   return full;
 }
-
 const KEYS=OBJS.map(o=>o.k).join(', ');
 function buildSystem(){
-  return `You are an objection trainer for a Y&G (Youth & Government) high-school mock trial student. Create ONE short, realistic examination exchange and decide whether it is objectionable.
+  return `You are an objection trainer for a Y&G (Youth & Government) high-school mock trial student. Create exactly THREE realistic examination exchanges based on the student's REAL case below, and decide whether each is objectionable.
 
-Vary it: sometimes the question/answer clearly warrants a specific objection; sometimes it is perfectly proper so "none" is correct. Mix direct and cross examination. Difficulty: ${difficulty} (easy = obvious; hard = subtle, tempting traps).
+Vary them: some should clearly warrant a specific objection, some should be perfectly proper ("none"). Mix DIRECT and CROSS. Make some a single question, and make at least one a SHORT RUNNING exchange of 2-4 lines that builds up (the objection is on the final attorney question). Difficulty: ${difficulty} (easy = obvious; hard = subtle traps). Use the real witness names and facts from the case.
 
-The ONLY valid objection keys are: ${KEYS}, or "none" if the exchange is proper.
+The ONLY valid objection keys are: ${KEYS}, or "none" if proper.
+Rules: hearsay = out-of-court statement for its truth. leading = suggests its answer (improper on DIRECT, fine on CROSS). speculation = asks witness to guess. foundation = no personal knowledge / facts not established. lay_opinion = a LAY witness giving an opinion needing specialized knowledge or beyond what they perceived (Rule 701). expert_opinion = an EXPERT not qualified in that field, opining outside their expertise, or giving a legal conclusion (Rule 702). relevance = not tied to a fact of consequence. argumentative = badgering, not seeking info. asked_answered = already answered. narrative = invites an open-ended story. compound = two questions in one.
 
-Y&G rules to apply: hearsay = out-of-court statement offered for its truth. leading = suggests its answer (improper on DIRECT, fine on CROSS). speculation = asks witness to guess. foundation = no personal knowledge / facts not established. lay_opinion = a LAY (ordinary) witness gives an opinion that needs specialized/technical/scientific knowledge or goes beyond what they personally saw or heard — lay witnesses may only give common-sense opinions from their own perception (Rule 701). expert_opinion = an EXPERT testifies improperly: not qualified/established as an expert in that field, opining outside their area of expertise, giving a legal conclusion, or stating an opinion with no reliable basis (Rule 702). relevance = not tied to a fact of consequence. argumentative = badgering / picking a fight, not seeking info. asked_answered = already answered. narrative = invites a long open-ended story. compound = two questions in one.
+Reply with ONLY valid JSON (no markdown):
+{"scenarios":[
+ {"context":"who is testifying + DIRECT or CROSS","exchanges":[{"who":"attorney","text":"..."},{"who":"witness","text":"..."}],"answer":"one key or none","explanation":"2-3 sentences citing the rule","phrasing":"how to voice it, e.g. 'Objection, hearsay.'"},
+ ... exactly 3 total ...
+]}
 
-Reply with ONLY valid JSON, no markdown, no extra text:
-{
- "context": "one short line: who is testifying + DIRECT or CROSS (e.g. 'Cross-examination of Officer Reyes')",
- "attorney": "the attorney's exact question",
- "witness": "the witness's exact answer, OR \\"\\" (empty) if the objection is to the question before any answer",
- "answer": "one key from the list above, or none",
- "explanation": "2-3 sentences: why that is the right call, citing the rule plainly",
- "phrasing": "exactly how to voice it aloud, e.g. 'Objection, hearsay.' — or for none: 'No objection — the question is proper.'"
-}`;
+THE REAL CASE:
+${caseText.slice(0,6000)}`;
 }
-
-// Forgiving JSON parse — handles code fences, stray text, trailing commas, smart quotes.
-function parseScenario(txt){
-  let s=(txt||'').trim();
-  s=s.replace(/```json/gi,'').replace(/```/g,'').trim();
-  const a=s.indexOf('{'), b=s.lastIndexOf('}');
-  if(a<0||b<=a) throw new Error('no-json');
+function parseJSON(txt){
+  let s=(txt||'').trim().replace(/```json/gi,'').replace(/```/g,'').trim();
+  const a=s.indexOf('{'),b=s.lastIndexOf('}');
+  if(a<0||b<=a)throw new Error('no-json');
   let body=s.slice(a,b+1);
-  let o;
-  try{ o=JSON.parse(body); }
-  catch(_){
-    body=body.replace(/[“”]/g,'"').replace(/[‘’]/g,"'").replace(/,\s*([}\]])/g,'$1');
-    o=JSON.parse(body);   // throws if still bad → caller retries
+  try{return JSON.parse(body);}catch(_){return JSON.parse(body.replace(/[“”]/g,'"').replace(/[‘’]/g,"'").replace(/,\s*([}\]])/g,'$1'));}
+}
+function normScenario(o){
+  if(!o)return null;
+  let ex=[];
+  if(Array.isArray(o.exchanges)) ex=o.exchanges.map(e=>({who:/wit/i.test(e.who||e.role||'')?'witness':'attorney',text:(e.text||e.line||'').trim()})).filter(e=>e.text);
+  else if(o.attorney){ex=[{who:'attorney',text:String(o.attorney)}];if(o.witness&&String(o.witness).trim())ex.push({who:'witness',text:String(o.witness)});}
+  if(!ex.length)return null;
+  let ans=o.answer||o.objection||'none';if(!OBJMAP[ans])ans='none';
+  return {context:o.context||'Witness examination',exchanges:ex,answer:ans,explanation:o.explanation||'',phrasing:o.phrasing||'',src:ex.length>1?'run':'case'};
+}
+async function generateBatch(){
+  let last=null;
+  for(let attempt=0;attempt<3;attempt++){
+    try{
+      const raw=await streamComplete(buildSystem(),'Generate 3 objection scenarios from the case as strict JSON now.');
+      const obj=parseJSON(raw);
+      const arr=(obj.scenarios||obj.items||[]).map(normScenario).filter(Boolean);
+      if(arr.length)return arr;
+      last=new Error('empty');
+    }catch(e){last=e;if(e.message==='RATE_LIMIT')throw e;}
   }
-  if(!o.attorney||!o.answer) throw new Error('missing-fields');
-  if(!OBJMAP[o.answer]) o.answer='none';
-  o.witness=o.witness||'';
-  return o;
+  throw last||new Error('failed');
 }
 
 // ══════ Flow ══════
+function resetCard(){
+  answered=false;current=null;
+  const r=document.getElementById('result');r.className='';r.innerHTML='';
+  document.getElementById('prompt-row').style.display='none';
+}
 async function nextScenario(){
   if(busy)return;
-  busy=true;answered=false;current=null;
-  document.getElementById('result').className='';
-  document.getElementById('result').innerHTML='';
-  document.getElementById('prompt-row').style.display='none';
+  resetCard();
+  // FREE bank mode — no tokens
+  if(source==='bank'){
+    if(!bankQueue.length){
+      let pool=BANK.map((_,i)=>i);
+      const f=pool.filter(i=>(BANK[i].d||'m')===diffLetter());
+      pool=f.length>=4?f:pool;
+      for(let i=pool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]];}
+      bankQueue=pool;
+    }
+    current=fromBank(BANK[bankQueue.pop()]);
+    renderScenario(0);
+    return;
+  }
+  // My Case mode — AI, batches of 3
+  if(!caseText){
+    document.getElementById('scenario').innerHTML='<div class="hintmsg">📄 Upload your <b>affidavits</b> and <b>evidence</b> above, then tap Start — the AI will build scenarios from your real case (3 at a time).</div>';
+    document.getElementById('next-btn').textContent='Start →';
+    return;
+  }
+  busy=true;
   document.getElementById('next-btn').style.display='none';
-  document.getElementById('scenario').innerHTML='<div class="loading">Writing a scenario<span class="dots"><span></span><span></span><span></span></span></div>';
-  let lastErr=null;
-  for(let attempt=0; attempt<3; attempt++){            // auto-retry malformed responses
-    try{
-      const raw=await streamComplete(buildSystem(),'Generate one objection scenario as strict JSON now. Output ONLY the JSON object.');
-      current=parseScenario(raw);
-      renderScenario();
-      busy=false;
-      return;
-    }catch(e){
-      lastErr=e;
-      if(e.message==='RATE_LIMIT') break;             // don't hammer a rate limit
+  if(!aiQueue.length){
+    document.getElementById('scenario').innerHTML='<div class="loading">Building 3 scenarios from your case<span class="dots"><span></span><span></span><span></span></span></div>';
+    try{ aiQueue=await generateBatch(); }
+    catch(e){
+      const msg=e.message==='RATE_LIMIT'?'⏱ Rate limit reached — wait a minute, then tap Try again.':'⚠ Couldn\'t generate from your case — tap Try again.';
+      document.getElementById('scenario').innerHTML='<div class="err">'+esc(msg)+'</div>';
+      const nb=document.getElementById('next-btn');nb.style.display='';nb.textContent='Try again →';
+      busy=false;return;
     }
   }
-  const msg=(lastErr&&lastErr.message==='RATE_LIMIT')
-    ? '⏱ Rate limit reached — wait about a minute, then tap Try again.'
-    : '⚠ Couldn\'t generate a clean scenario — tap Try again.';
-  document.getElementById('scenario').innerHTML='<div class="err">'+esc(msg)+'</div>';
-  const nb=document.getElementById('next-btn');
-  nb.style.display='';nb.textContent='Try again →';
+  current=aiQueue.shift();
+  renderScenario(aiQueue.length);
   busy=false;
 }
 
-function renderScenario(){
+function renderScenario(remaining){
   const c=current;
-  let html='<div class="ctx">'+esc(c.context||'Witness examination')+'</div><div class="exchange">';
-  html+='<div class="line q"><span class="who">Attorney</span><span class="said">'+esc(c.attorney)+'</span></div>';
-  if(c.witness&&c.witness.trim())
-    html+='<div class="line a"><span class="who">Witness</span><span class="said">'+esc(c.witness)+'</span></div>';
+  const badge = c.src==='run' ? '<span class="srcbadge run">Running exchange</span>'
+              : c.src==='case' ? '<span class="srcbadge case">From your case'+(remaining>0?' · '+remaining+' left in set':'')+'</span>'
+              : '<span class="srcbadge bank">Practice</span>';
+  let html='<div class="ctxrow"><span class="ctx">'+esc(c.context||'Witness examination')+'</span>'+badge+'</div><div class="exchange">';
+  c.exchanges.forEach(e=>{
+    const q=e.who==='attorney';
+    html+='<div class="line '+(q?'q':'a')+'"><span class="who">'+(q?'Attorney':'Witness')+'</span><span class="said">'+esc(e.text)+'</span></div>';
+  });
   html+='</div>';
   document.getElementById('scenario').innerHTML=html;
-  // buttons
   const grid=document.getElementById('objgrid');
   grid.innerHTML=OBJS.map(o=>'<button class="obj" data-k="'+o.k+'" onclick="choose(\''+o.k+'\')">'+o.label+'</button>').join('')
     +'<button class="obj none" data-k="none" onclick="choose(\'none\')">✓ No Objection — it\'s proper</button>';
   document.getElementById('prompt-row').style.display='';
+  document.getElementById('next-btn').style.display='none';
 }
 
 function choose(key){
   if(answered||!current)return;
   answered=true;
-  const correct=current.answer;
-  const right=key===correct;
-  // mark buttons
+  const correct=current.answer, right=key===correct;
   document.querySelectorAll('.obj').forEach(b=>{
-    b.disabled=true;
-    const k=b.dataset.k;
+    b.disabled=true;const k=b.dataset.k;
     if(k===correct)b.classList.add('correct');
     else if(k===key)b.classList.add('wrong');
     else b.classList.add('dim');
   });
-  // stats
   stats.total++;
-  if(right){stats.correct++;stats.streak++;stats.best=Math.max(stats.best,stats.streak);}
-  else stats.streak=0;
+  if(right){stats.correct++;stats.streak++;stats.best=Math.max(stats.best,stats.streak);}else stats.streak=0;
   saveStats();renderStats();
-  // result panel
   const r=document.getElementById('result');
   r.className='show '+(right?'right':'wrong');
-  r.innerHTML=
-    '<div class="verdict">'+(right?'✓ Correct!':'✗ Not quite')+'</div>'+
+  r.innerHTML='<div class="verdict">'+(right?'✓ Correct!':'✗ Not quite')+'</div>'+
     '<div class="rtext">The right call: <b>'+esc(OBJMAP[correct])+'</b>'+(right?'':' — you picked <b>'+esc(OBJMAP[key])+'</b>')+'.</div>'+
     '<div class="rlabel">Why</div><div class="rtext">'+esc(current.explanation||'')+'</div>'+
     '<div class="rlabel">How to say it</div><div class="phrasing">'+esc(current.phrasing||'')+'</div>';
-  const nb=document.getElementById('next-btn');
-  nb.style.display='';nb.textContent='Next scenario →';
+  const nb=document.getElementById('next-btn');nb.style.display='';nb.textContent='Next scenario →';
 }
 
 // ══════ Changelog ══════
 const CHANGELOG=[
-  ['v1.2','Split "Improper Opinion" into Lay Witness Opinion (Rule 701) and Improper Expert Opinion (Rule 702) — each with its own rule.'],
-  ['v1.1','Fixed the occasional "bad" error — backend now forces clean JSON and the app auto-retries if a scenario comes back malformed.'],
-  ['v1.0','Spot-the-objection drill: realistic AI exchanges, instant feedback with the rule and how to phrase the objection, difficulty levels, score + streak.'],
+  ['v2.0','Free practice bank (zero AI tokens) + "My Case" mode that builds scenarios from your affidavits & evidence in batches of 3. Now includes single AND running multi-line exchanges.'],
+  ['v1.2','Split opinion into Lay Witness (701) and Expert (702).'],
+  ['v1.1','Backend forces clean JSON + auto-retry to fix the "bad" error.'],
+  ['v1.0','Spot-the-objection drill with feedback, difficulty, score + streak.'],
 ];
 function showChangelog(){alert('Objection Trainer — Update History\n\n'+CHANGELOG.map(([v,d])=>v+'  —  '+d).join('\n\n'));}
 
 // ══════ Back to site (only when embedded) ══════
 const SITE_URL='https://ygblueprint.me';
-if(window.self!==window.top){
-  const b=document.getElementById('backbtn');b.href=SITE_URL;b.style.display='inline-flex';
-}
+if(window.self!==window.top){const b=document.getElementById('backbtn');b.href=SITE_URL;b.style.display='inline-flex';}
 
 loadStats();
 </script>
