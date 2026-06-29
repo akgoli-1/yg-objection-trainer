@@ -94,7 +94,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
     <a id="backbtn" class="backbtn" href="https://ygblueprint.me" target="_top">← Back to site</a>
     <span class="brand">⚖️ <span class="em">Objection</span> Trainer</span>
     <span class="spacer"></span>
-    <span class="vtag" onclick="showChangelog()" title="What's new">v1.1</span>
+    <span class="vtag" onclick="showChangelog()" title="What's new">v1.2</span>
   </div>
   <div class="sub">Read the exchange, then call the objection — or say it's proper. Sharpen your instincts for trial.</div>
 
@@ -130,7 +130,8 @@ const OBJS=[
   {k:'leading',        label:'Leading'},
   {k:'speculation',    label:'Speculation'},
   {k:'foundation',     label:'Lack of Foundation'},
-  {k:'opinion',        label:'Improper Opinion'},
+  {k:'lay_opinion',    label:'Lay Witness Opinion'},
+  {k:'expert_opinion', label:'Improper Expert Opinion'},
   {k:'relevance',      label:'Relevance'},
   {k:'argumentative',  label:'Argumentative'},
   {k:'asked_answered', label:'Asked & Answered'},
@@ -199,7 +200,7 @@ Vary it: sometimes the question/answer clearly warrants a specific objection; so
 
 The ONLY valid objection keys are: ${KEYS}, or "none" if the exchange is proper.
 
-Y&G rules to apply: hearsay = out-of-court statement offered for its truth. leading = suggests its answer (improper on DIRECT, fine on CROSS). speculation = asks witness to guess. foundation = no personal knowledge / facts not established. opinion = lay witness giving improper opinion/expert conclusion. relevance = not tied to a fact of consequence. argumentative = badgering / picking a fight, not seeking info. asked_answered = already answered. narrative = invites a long open-ended story. compound = two questions in one.
+Y&G rules to apply: hearsay = out-of-court statement offered for its truth. leading = suggests its answer (improper on DIRECT, fine on CROSS). speculation = asks witness to guess. foundation = no personal knowledge / facts not established. lay_opinion = a LAY (ordinary) witness gives an opinion that needs specialized/technical/scientific knowledge or goes beyond what they personally saw or heard — lay witnesses may only give common-sense opinions from their own perception (Rule 701). expert_opinion = an EXPERT testifies improperly: not qualified/established as an expert in that field, opining outside their area of expertise, giving a legal conclusion, or stating an opinion with no reliable basis (Rule 702). relevance = not tied to a fact of consequence. argumentative = badgering / picking a fight, not seeking info. asked_answered = already answered. narrative = invites a long open-ended story. compound = two questions in one.
 
 Reply with ONLY valid JSON, no markdown, no extra text:
 {
@@ -309,6 +310,7 @@ function choose(key){
 
 // ══════ Changelog ══════
 const CHANGELOG=[
+  ['v1.2','Split "Improper Opinion" into Lay Witness Opinion (Rule 701) and Improper Expert Opinion (Rule 702) — each with its own rule.'],
   ['v1.1','Fixed the occasional "bad" error — backend now forces clean JSON and the app auto-retries if a scenario comes back malformed.'],
   ['v1.0','Spot-the-objection drill: realistic AI exchanges, instant feedback with the rule and how to phrase the objection, difficulty levels, score + streak.'],
 ];
